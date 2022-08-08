@@ -66,10 +66,14 @@ class CreateTenantUser extends Component<IProps, IState> {
         });
 
         this.props.history.push(`/tenants/${this.props.tenant.getId()}/users`);
-      } else {
-        // TODO figure out why error msg doesn't come in
+      } else if (res.status === 409) {
         notification.error({
-          message: "Unable to invite user, please try again",
+          message: "That email has already been invited to this tenant",
+          duration: 3,
+        });
+      } else {
+        notification.error({
+          message: "Something went wrong, please try again",
           duration: 3,
         });
       }
