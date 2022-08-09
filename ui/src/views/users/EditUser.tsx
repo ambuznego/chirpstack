@@ -93,9 +93,6 @@ class EditUser extends Component<RouteComponentProps<MatchParams>, IState> {
           title={user.getEmail()}
           subTitle={`user id: ${user.getId()}`}
           extra={[
-            <Button>
-              <Link to={`/users/${user.getId()}/password`}>Change password</Link>
-            </Button>,
             <DeleteConfirm typ="user" confirm={user.getEmail()} onConfirm={this.deleteUser}>
               <Button danger type="primary">
                 Delete user
