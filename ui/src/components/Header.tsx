@@ -69,11 +69,6 @@ class Header extends Component<IProps, IState> {
 
     const menu = (
       <Menu>
-        {!oidcEnabled && (
-          <Menu.Item>
-            <Link to={`/users/${this.props.user.getId()}/password`}>Change password</Link>
-          </Menu.Item>
-        )}
         <Menu.Item>
           <Link to="/login">Logout</Link>
         </Menu.Item>
