@@ -51,8 +51,7 @@ class LoginForm extends Component<RouteComponentProps, LoginFormState> {
                     required: true,
                     message: "Please enter your email / username!",
                   },
-                ]}
-              >
+                ]}>
                 <Input />
               </Form.Item>
 
@@ -64,8 +63,7 @@ class LoginForm extends Component<RouteComponentProps, LoginFormState> {
                     required: true,
                     message: "Please enter your password!",
                   },
-                ]}
-              >
+                ]}>
                 <Input.Password />
               </Form.Item>
 
@@ -124,39 +122,45 @@ class Login extends Component<RouteComponentProps, LoginState> {
   componentDidMount() {
     SessionStore.logout(true, () => {});
 
-    // if (this.props.location.search === "") {
-    //   InternalStore.settings((resp: SettingsResponse) => {
-    //     this.setState({
-    //       loaded: true,
-    //       oidcEnabled: resp.getOpenidConnect()!.getEnabled(),
-    //       oidcLoginLabel: resp.getOpenidConnect()!.getLoginLabel(),
-    //       oidcLoginUrl: resp.getOpenidConnect()!.getLoginUrl(),
-    //     });
-    //   });
-    // } else {
-    //   // Callback from OIDC provider.
-    //   let q = new URLSearchParams(this.props.location.search);
-    //   let req = new OpenIdConnectLoginRequest();
-    //   req.setCode(q.get("code") || "");
-    //   req.setState(q.get("state") || "");
+    if (process.env.NODE_ENV !== "production") {
+      if (this.props.location.search === "") {
+        InternalStore.settings((resp: SettingsResponse) => {
+          this.setState({
+            loaded: true,
+            oidcEnabled: resp.getOpenidConnect()!.getEnabled(),
+            oidcLoginLabel: resp.getOpenidConnect()!.getLoginLabel(),
+            oidcLoginUrl: resp.getOpenidConnect()!.getLoginUrl(),
+          });
+        });
+      } else {
+        // Callback from OIDC provider.
+        let q = new URLSearchParams(this.props.location.search);
+        let req = new OpenIdConnectLoginRequest();
+        req.setCode(q.get("code") || "");
+        req.setState(q.get("state") || "");
 
-    //   SessionStore.openIdConnectLogin(req, () => {
-    //     this.props.history.push("/");
-    //   });
-    // }
-    window.location.replace(`${window.location.origin}/logout_chirpstack`)
+        SessionStore.openIdConnectLogin(req, () => {
+          this.props.history.push("/");
+        });
+      }
+    } else {
+      window.location.replace(`${window.location.origin}/logout_chirpstack`);
+    }
   }
 
   render() {
-    // if (!this.state.loaded) {
+    if (process.env.NODE_ENV !== "production") {
+      if (!this.state.loaded) {
+        return null;
+      }
+      if (this.state.oidcEnabled) {
+        return <OidcLogin loginUrl={this.state.oidcLoginUrl} loginLabel={this.state.oidcLoginLabel} />;
+      } else {
+        return <LoginForm {...this.props} />;
+      }
+    } else {
       return null;
-    // }
-
-    // if (this.state.oidcEnabled) {
-    //   return <OidcLogin loginUrl={this.state.oidcLoginUrl} loginLabel={this.state.oidcLoginLabel} />;
-    // } else {
-    //   return <LoginForm {...this.props} />;
-    // }
+    }
   }
 }
 

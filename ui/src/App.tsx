@@ -94,6 +94,9 @@ class App extends Component<IProps, IState> {
                       <Route exact path="/users" component={ListUsers} />
                       <Route exact path="/users/create" component={CreateUser} />
                       <Route exact path="/users/:userId([\w-]{36})" component={EditUser} />
+                      {process.env.NODE_ENV !== "production" && (
+                        <Route exact path="/users/:userId([\w-]{36})/password" component={ChangeUserPassword} />
+                      )}
 
                       <Route exact path="/api-keys" component={ListAdminApiKeys} />
                       <Route exact path="/api-keys/create" component={CreateAdminApiKey} />
