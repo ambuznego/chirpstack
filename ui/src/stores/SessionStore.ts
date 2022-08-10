@@ -54,7 +54,7 @@ class SessionStore extends EventEmitter {
   };
 
   logout = (emit: boolean, callbackFunc: () => void) => {
-    localStorage.clear();
+    // localStorage.clear();
     this.user = undefined;
     this.tenants = [];
 
