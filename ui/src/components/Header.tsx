@@ -69,6 +69,11 @@ class Header extends Component<IProps, IState> {
 
     const menu = (
       <Menu>
+        {process.env.NODE_ENV !== "production" && !oidcEnabled && (
+          <Menu.Item>
+            <Link to={`/users/${this.props.user.getId()}/password`}>Change password</Link>
+          </Menu.Item>
+        )}
         <Menu.Item>
           <Link to="/login">Logout</Link>
         </Menu.Item>
@@ -138,8 +143,7 @@ class Header extends Component<IProps, IState> {
               dropdownClassName="search-dropdown"
               dropdownMatchSelectWidth={500}
               options={options}
-              onSearch={this.onSearch}
-            >
+              onSearch={this.onSearch}>
               <Input.Search placeholder="Search..." style={{ width: 500, marginTop: -5 }} />
             </AutoComplete>
           </div>
