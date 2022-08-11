@@ -46,6 +46,13 @@ interface IState {
   user?: User;
 }
 
+declare global {
+  interface Window {
+    main_app_url: any;
+    login_app_url: any;
+  }
+}
+
 class App extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
@@ -56,15 +63,22 @@ class App extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    SessionStore.on("change", () => {
+    fetch("/environment_urls")
+    .then((response) => response.json())
+    .then(data => {
+      window.main_app_url = data.main_app_url
+      window.login_app_url = data.login_app_url
+
+      SessionStore.on("change", () => {
+        this.setState({
+          user: SessionStore.getUser(),
+        });
+      });
+  
       this.setState({
         user: SessionStore.getUser(),
       });
-    });
-
-    this.setState({
-      user: SessionStore.getUser(),
-    });
+    })
   }
 
   render() {

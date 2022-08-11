@@ -14,7 +14,13 @@ app.get('/static/js/main.*', (req, res) => {
       res.sendFile(`${__dirname}/build/static/js/${fileName}`)
     }
   })
-  
+})
+
+app.get('/environment_urls', (req, res) => {
+  res.json({
+    main_app_url: process.env.MAIN_APP_URL,
+    login_app_url: process.env.LOGIN_APP_URL
+  })
 })
 
 app.listen(port, () => {
