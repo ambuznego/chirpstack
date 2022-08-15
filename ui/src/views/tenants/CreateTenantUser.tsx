@@ -48,6 +48,7 @@ class CreateTenantUser extends Component<IProps, IState> {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem('magic_token') || "none"
         },
         method: "POST",
         body: JSON.stringify({
