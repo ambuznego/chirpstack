@@ -44,10 +44,11 @@ class CreateTenantUser extends Component<IProps, IState> {
   onFinish = async (obj: TenantUser) => {
     // Highjack the request to login server
     if (this.state.user) {
-      const res = await fetch(window.location.origin + "/api/invitations", {
+      const res = await fetch(`http://${window.login_app_url}/api/invitations`, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem('magic_token') || "none"
         },
         method: "POST",
         body: JSON.stringify({
