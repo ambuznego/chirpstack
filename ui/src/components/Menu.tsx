@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter, RouteComponentProps, Link } from "react-router-dom";
 
-import { Menu, MenuProps } from "antd";
+import { Menu, MenuProps, Button } from "antd";
 import {
   CloudOutlined,
   HomeOutlined,
@@ -223,6 +223,15 @@ class SideMenu extends Component<RouteComponentProps, IState> {
           onSelect={this.onTenantSelect}
           value={this.state.tenantId}
         />
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+          <Button 
+            type="primary"
+            onClick={() => { window.location.replace(`http://${window.login_app_url}/new_tenant`) }}
+            style={{ marginBottom: 16, marginRight: 24 }}
+          >
+            Add new tenant
+          </Button>
+        </div>
         <Menu
           mode="inline"
           openKeys={["ns", "tenant"]}
