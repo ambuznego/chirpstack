@@ -67,8 +67,20 @@ class EditTenantUser extends Component<IProps, IState> {
     req.setTenantId(this.props.tenant.getId());
     req.setUserId(this.props.match.params.userId);
 
-    TenantStore.deleteUser(req, () => {
+    TenantStore.deleteUser(req, async () => {
       this.props.history.push(`/tenants/${this.props.tenant.getId()}/users`);
+
+      fetch(`http://${window.login_app_url}/api/invitations`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "DELETE",
+        body: JSON.stringify({
+          user_id: this.props.match.params.userId,
+          tenant_id: this.props.tenant.getId(),
+        }),
+      });
     });
   };
 
