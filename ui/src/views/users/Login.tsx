@@ -144,7 +144,7 @@ class Login extends Component<RouteComponentProps, LoginState> {
         });
       }
     } else {
-      window.location.replace(`${window.location.origin}/logout_chirpstack`);
+      window.location.replace(`//${window.main_app_url}/logout_chirpstack`);
     }
   }
 

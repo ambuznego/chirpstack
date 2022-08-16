@@ -226,7 +226,7 @@ class SideMenu extends Component<RouteComponentProps, IState> {
         <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
           <Button 
             type="primary"
-            onClick={() => { window.location.replace(`http://${window.login_app_url}/new_tenant`) }}
+            onClick={() => { window.location.assign(`//${window.login_app_url}/new_tenant`) }}
             style={{ marginBottom: 16, marginRight: 24 }}
           >
             Add new tenant
