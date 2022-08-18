@@ -262,7 +262,7 @@ impl TxAck {
 
         let mut ds = self.device_session.as_mut().unwrap();
 
-        if ds.mac_version.to_string().starts_with("1.0") {
+        if ds.mac_version().to_string().starts_with("1.0") {
             ds.n_f_cnt_down += 1;
         } else {
             ds.a_f_cnt_down += 1;
@@ -415,6 +415,7 @@ impl TxAck {
                     "".to_string()
                 }
             },
+            plaintext_mac_commands: false,
         };
 
         // Log for gateway (with potentially encrypted mac-commands).
@@ -451,6 +452,7 @@ impl TxAck {
             m_type: dfl.m_type,
             dev_addr: dfl.dev_addr.clone(),
             dev_eui: dfl.dev_eui.clone(),
+            plaintext_mac_commands: true,
         };
 
         // Log for device.

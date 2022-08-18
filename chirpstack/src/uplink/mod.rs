@@ -13,7 +13,7 @@ use uuid::Uuid;
 
 use crate::config;
 use crate::framelog;
-use crate::storage::{gateway, get_redis_conn, redis_key};
+use crate::storage::{error::Error as StorageError, gateway, get_redis_conn, redis_key};
 use chirpstack_api::{api, common, gw};
 use lrwn::region::CommonName;
 use lrwn::{MType, PhyPayload, EUI64};
@@ -74,6 +74,7 @@ impl TryFrom<&UplinkFrameSet> for api::UplinkFrameLog {
                 _ => "".to_string(),
             },
             time: None, // is set below
+            plaintext_mac_commands: false,
         };
 
         for rx_info in &ufl.rx_info {
@@ -303,11 +304,19 @@ pub async fn handle_uplink(deduplication_id: Uuid, uplink: gw::UplinkFrameSet) -
 }
 
 async fn update_gateway_metadata(ufs: &mut UplinkFrameSet) -> Result<()> {
+    let conf = config::get();
     for rx_info in &mut ufs.rx_info_set {
         let gw_id = EUI64::from_str(&rx_info.gateway_id)?;
         let gw_meta = match gateway::get_meta(&gw_id).await {
             Ok(v) => v,
             Err(e) => {
+                if conf.gateway.allow_unknown_gateways {
+                    if let StorageError::NotFound(_) = e {
+                        ufs.gateway_private_map.insert(gw_id, false);
+                        continue;
+                    }
+                }
+
                 error!(
                     gateway_id = gw_id.to_string().as_str(),
                     error = format!("{}", e).as_str(),
@@ -317,7 +326,6 @@ async fn update_gateway_metadata(ufs: &mut UplinkFrameSet) -> Result<()> {
             }
         };
 
-        let mut rx_info = rx_info.clone();
         rx_info.location = Some(common::Location {
             latitude: gw_meta.latitude,
             longitude: gw_meta.longitude,
